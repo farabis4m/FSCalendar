@@ -127,6 +127,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
 
 @dynamic selectedDate;
 @synthesize scopeGesture = _scopeGesture, swipeToChooseGesture = _swipeToChooseGesture;
+@synthesize calendarType;
 
 #pragma mark - Life Cycle && Initialize
 
@@ -148,12 +149,24 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
     return self;
 }
 
+-(NSCalendarIdentifier)getCalendarType {
+    return (calendarType == gregorian) ? NSCalendarIdentifierGregorian : NSCalendarIdentifierIslamicUmmAlQura;
+}
+    
+-(NSString *)getMinimumDate {
+    return (calendarType == gregorian) ? @"1970-01-01" : @"0001-01-01";
+}
+    
+-(NSString *)getMaximumDate {
+    return (calendarType == gregorian) ? @"2099-12-31" : @"9999-12-31";
+}
+    
 - (void)initialize
 {   
     _appearance = [[FSCalendarAppearance alloc] init];
     _appearance.calendar = self;
     
-    _gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    _gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:[self getCalendarType]];
     _components = [[NSDateComponents alloc] init];
     _formatter = [[NSDateFormatter alloc] init];
     _formatter.dateFormat = @"yyyy-MM-dd";
@@ -165,8 +178,8 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
     _today = [self.gregorian dateBySettingHour:0 minute:0 second:0 ofDate:[NSDate date] options:0];
     _currentPage = [self.gregorian fs_firstDayOfMonth:_today];
     
-    _minimumDate = [self.formatter dateFromString:@"1970-01-01"];
-    _maximumDate = [self.formatter dateFromString:@"2099-12-31"];
+    _minimumDate = [self.formatter dateFromString:[self getMinimumDate]];
+    _maximumDate = [self.formatter dateFromString:[self getMaximumDate]];
     
     _headerHeight     = FSCalendarAutomaticDimension;
     _weekdayHeight    = FSCalendarAutomaticDimension;
@@ -1645,9 +1658,9 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
     if (_needsRequestingBoundingDates) {
         _needsRequestingBoundingDates = NO;
         self.formatter.dateFormat = @"yyyy-MM-dd";
-        NSDate *newMin = [self.dataSourceProxy minimumDateForCalendar:self]?:[self.formatter dateFromString:@"1970-01-01"];
+        NSDate *newMin = [self.dataSourceProxy minimumDateForCalendar:self]?:[self.formatter dateFromString:[self getMinimumDate]];
         newMin = [self.gregorian dateBySettingHour:0 minute:0 second:0 ofDate:newMin options:0];
-        NSDate *newMax = [self.dataSourceProxy maximumDateForCalendar:self]?:[self.formatter dateFromString:@"2099-12-31"];
+        NSDate *newMax = [self.dataSourceProxy maximumDateForCalendar:self]?:[self.formatter dateFromString:[self getMaximumDate]];
         newMax = [self.gregorian dateBySettingHour:0 minute:0 second:0 ofDate:newMax options:0];
         
         NSAssert([self.gregorian compareDate:newMin toDate:newMax toUnitGranularity:NSCalendarUnitDay] != NSOrderedDescending, @"The minimum date of calendar should be earlier than the maximum.");

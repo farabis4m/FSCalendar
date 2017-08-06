@@ -52,6 +52,11 @@ typedef NS_ENUM(NSUInteger, FSCalendarMonthPosition) {
     FSCalendarMonthPositionNotFound = NSNotFound
 };
 
+typedef NS_ENUM(NSUInteger, FTCalendarType) {
+    islamic,
+    gregorian
+};
+
 NS_ASSUME_NONNULL_BEGIN
 
 @class FSCalendar;
@@ -304,6 +309,15 @@ IB_DESIGNABLE
  */
 @property (assign, nonatomic) FSCalendarScrollDirection scrollDirection;
 
+/**
+ * The Calendar Type to be shown.
+ *
+ * e.g. Gregorian, Islamic etc.,.
+ *
+ *    calendar.calendarType = Gregorian;
+ */
+@property (assign, nonatomic) FTCalendarType calendarType;
+    
 /**
  * The scope of calendar, change scope will trigger an inner frame change, make sure the frame has been correctly adjusted in 
  *
