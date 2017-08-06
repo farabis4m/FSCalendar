@@ -22,7 +22,7 @@
 #import "FSCalendarWeekdayView.h"
 #import "FSCalendarHeaderView.h"
 
-//! Project version number for FSCalendar.
+//! Project version number for FSCalendar. // check
 FOUNDATION_EXPORT double FSCalendarVersionNumber;
 
 //! Project version string for FSCalendar.
